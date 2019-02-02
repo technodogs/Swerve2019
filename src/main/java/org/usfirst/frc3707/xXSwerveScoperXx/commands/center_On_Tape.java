@@ -71,6 +71,8 @@ public class center_On_Tape extends Command {
             //double error = 159 - realx_pos[0];
             error = Robot.driveSystem.computePIDPower(realx_pos[0], 159);
             Robot.driveSystem.moveLeftOrRight(-error);
+
+            //TODO: What are we doing here? Keeping a running tally of the errors?
             for (int x = 0; x < lastError.length; x++)
             {
                 if (lastError[x] != 0)
@@ -97,6 +99,9 @@ public class center_On_Tape extends Command {
     protected boolean isFinished() {
         double errDiff = 0;
         // do a fancy finishing algorithm
+
+        //TODO: Add an explanation of why this is necessary 
+        //to determine if the command is supposed to finish
         for (int x = 0; x < lastError.length; x++)
         {
             errDiff += lastError[x];
