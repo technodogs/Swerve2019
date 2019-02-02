@@ -45,6 +45,7 @@ public class center_On_Tape extends Command {
     NetworkTable pixyData;
     double[] defaultValue = {-1};
     double error;
+    double[] lastError = new double[10];
 
     // Called just before this Command runs the first time
     @Override
@@ -66,24 +67,45 @@ public class center_On_Tape extends Command {
         realx_pos = x_pos.getDoubleArray(defaultValue);
         //System.out.println(realx_pos[0]);
 
-
         if (realx_pos.length > 0 && realx_pos[0] != -1){
-
-        //double error = 159 - realx_pos[0];
-        error = Robot.driveSystem.computePIDPower(realx_pos[0], 159);
-        System.out.println(error);
-        Robot.driveSystem.moveLeftOrRight(-error);
-        // if (realx_pos[0] < 156.0){
-        //     Robot.driveSystem.moveLeft();
-        // }else {
-        //     Robot.driveSystem.moveRight();
-        // }
-    }
+            //double error = 159 - realx_pos[0];
+            error = Robot.driveSystem.computePIDPower(realx_pos[0], 159);
+            Robot.driveSystem.moveLeftOrRight(-error);
+            for (int x = 0; x < lastError.length; x++)
+            {
+                if (lastError[x] != 0)
+                {
+                    lastError[x] = Math.abs(error);
+                    break;
+                }
+            }
+            for (int x = 1; x < lastError.length; x++)
+            {
+                lastError[x - 1] = lastError[x];
+            }
+            lastError[lastError.length - 1] = error;
+            // if (realx_pos[0] < 156.0){
+            //     Robot.driveSystem.moveLeft();
+            // }else {
+            //     Robot.driveSystem.moveRight();
+            // }
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()
     @Override
     protected boolean isFinished() {
+        double errDiff = 0;
+
+        for (int x = 0; x < lastError.length; x++)
+        {
+            errDiff += lastError[x];
+        }
+        errDiff = errDiff / lastError.length;
+
+        if (Math.abs(error - errDiff) < 0.01 && Math.abs(error) < 0.13) {
+            return true;
+        }
         return false;
     }
 
