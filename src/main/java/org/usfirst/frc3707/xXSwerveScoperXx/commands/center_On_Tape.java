@@ -96,7 +96,7 @@ public class center_On_Tape extends Command {
     @Override
     protected boolean isFinished() {
         double errDiff = 0;
-
+        // do a fancy finishing algorithm
         for (int x = 0; x < lastError.length; x++)
         {
             errDiff += lastError[x];
