@@ -13,12 +13,12 @@ public class SwerveDrive implements PIDOutput {
     private SwerveWheel leftBackWheel;
     private SwerveWheel rightBackWheel;
     
-   // private GyroBase gyro;
+    private GyroBase gyro;
 
     private double wheelbase = 22.5;
     private double trackwidth = 24.5;
 
-    public SwerveDrive(SwerveWheel rightFront, SwerveWheel leftFront, SwerveWheel leftBack, SwerveWheel rightBack){
+    public SwerveDrive(SwerveWheel rightFront, SwerveWheel leftFront, SwerveWheel leftBack, SwerveWheel rightBack, GyroBase gyro){
     	this.rightFrontWheel = rightFront;
     	this.leftFrontWheel = leftFront;
     	this.leftBackWheel = leftBack;
@@ -26,7 +26,7 @@ public class SwerveDrive implements PIDOutput {
         
         System.out.println("SwerveDrive Initialized");
 	    
-        //this.gyro = gyro;
+        this.gyro = gyro;
     }
     
     public void drive(double directionX, double directionY, double rotation, boolean useGyro, boolean slowSpeed) {
@@ -128,13 +128,13 @@ public class SwerveDrive implements PIDOutput {
         // System.out.println("Front Right Angle: " + frontRightAngle);
         // System.out.println("Front Left Angle: " + frontLeftAngle);
         
-        // if(useGyro) {
-        //     double gyroAngle = normalizeGyroAngle(gyro.getAngle()); 
-        //     backRightAngle += gyroAngle;
-        //     backLeftAngle += gyroAngle;
-        //     frontRightAngle += gyroAngle;
-        //     frontLeftAngle += gyroAngle;
-        // }
+        if(useGyro) {
+            double gyroAngle = normalizeGyroAngle(gyro.getAngle()); 
+            backRightAngle += gyroAngle;
+            backLeftAngle += gyroAngle;
+            frontRightAngle += gyroAngle;
+            frontLeftAngle += gyroAngle;
+        }
         if(slowSpeed) {
         	backRightSpeed *= 0.5;
         	backLeftSpeed *= 0.5;
@@ -160,4 +160,12 @@ public class SwerveDrive implements PIDOutput {
     public double normalizeGyroAngle(double angle){
         return (angle - (Math.floor( angle / 360) * 360) );
     }
+
+    public void driveSimple(double speed, double angle) {
+        this.rightFrontWheel.drive(speed, angle);
+		this.leftFrontWheel.drive(speed, angle);
+		this.leftBackWheel.drive(speed, angle);
+        this.rightBackWheel.drive(speed, angle);
+    }
+
 }
