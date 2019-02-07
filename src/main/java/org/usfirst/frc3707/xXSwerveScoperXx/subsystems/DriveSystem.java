@@ -8,7 +8,6 @@
 // update. Deleting the comments indicating the section will prevent
 // it from being updated in the future.
 
-
 package org.usfirst.frc3707.xXSwerveScoperXx.subsystems;
 
 import org.usfirst.frc3707.xXSwerveScoperXx.Robot;
@@ -16,8 +15,10 @@ import org.usfirst.frc3707.xXSwerveScoperXx.commands.*;
 //import org.usfirst.frc3707.xXSwerveScoperXx.lidar.LidarLitePWM;
 import org.usfirst.frc3707.xXSwerveScoperXx.swerve.*;
 
-
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -187,5 +188,37 @@ public void moveLeftOrRight(double power){
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-}
+    NetworkTableEntry x_pos;
+    NetworkTableEntry y_pos;
+    NetworkTableInstance inst;
+    double[] realx_pos;
+    NetworkTable pixyData;
+    double[] defaultValue = {-1};
+    double error;
+    double[] lastError = new double[10];
+    
+    public double getError ()
+    {
+        inst = NetworkTableInstance.getDefault();
+        pixyData = inst.getTable("PixyData");
 
+        x_pos = pixyData.getEntry("x_pos");
+        y_pos = pixyData.getEntry("y_pos");
+        
+        realx_pos = x_pos.getDoubleArray(defaultValue);
+
+        if (realx_pos.length > 0 && realx_pos[0] != -1)
+        {
+            error = Robot.driveSystem.computePIDPower(realx_pos[0], 159);
+            return error;
+        }
+        return 0;
+    }
+
+    public boolean getSee ()
+    {
+        NetworkTableEntry seeHolder = pixyData.getEntry("object_detected");
+        boolean see = seeHolder.getBoolean(false);
+        return see;
+    }
+}

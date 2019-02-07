@@ -12,6 +12,7 @@
 package org.usfirst.frc3707.xXSwerveScoperXx.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc3707.xXSwerveScoperXx.Robot;
+import org.usfirst.frc3707.xXSwerveScoperXx.subsystems.DriveSystem;
 
 /**
  *
@@ -45,11 +46,17 @@ public class joystick_drive_swerve extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
-        prank *=1.2;
-        if (prank > 1){
-            prank = .01;
+
+        if (Robot.oi.joystick1.getRawButton(6) == true)
+        {
+            Robot.driveSystem.drive(Robot.driveSystem.getError(), Robot.oi.joystick1.getRawAxis(1), Robot.oi.joystick1.getRawAxis(4), Robot.oi.joystick1.getRawButton(3), Robot.oi.joystick1.getRawButton(2)); 
+            System.out.println("test");   
         }
-        Robot.driveSystem.drive(Robot.oi.joystick1.getRawAxis(0), Robot.oi.joystick1.getRawAxis(1), Robot.oi.joystick1.getRawAxis(4), Robot.oi.joystick1.getRawButton(3), Robot.oi.joystick1.getRawButton(2));
+        else
+        {
+            Robot.driveSystem.drive(Robot.oi.joystick1.getRawAxis(0), Robot.oi.joystick1.getRawAxis(1), Robot.oi.joystick1.getRawAxis(4), Robot.oi.joystick1.getRawButton(3), Robot.oi.joystick1.getRawButton(2));
+            System.out.println("test 2");
+        }
        // Robot.driveSystem.drive(Robot.oi.joystick1.getRawAxis(4), Robot.oi.joystick1.getRawAxis(1), Robot.oi.joystick1.getRawAxis(0), Robot.oi.joystick1.getRawButton(3), Robot.oi.joystick1.getRawButton(2));
     }
     // Make this return true when this Command no longer needs to run execute()
