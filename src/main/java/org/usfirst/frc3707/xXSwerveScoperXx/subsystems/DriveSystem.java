@@ -10,25 +10,27 @@
 
 package org.usfirst.frc3707.xXSwerveScoperXx.subsystems;
 
-import org.usfirst.frc3707.xXSwerveScoperXx.Robot;
-import org.usfirst.frc3707.xXSwerveScoperXx.commands.*;
-//import org.usfirst.frc3707.xXSwerveScoperXx.lidar.LidarLitePWM;
-import org.usfirst.frc3707.xXSwerveScoperXx.swerve.*;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import org.usfirst.frc3707.xXSwerveScoperXx.Robot;
+import org.usfirst.frc3707.xXSwerveScoperXx.commands.joystick_drive_swerve;
+import org.usfirst.frc3707.xXSwerveScoperXx.lidar.Lidar;
+import org.usfirst.frc3707.xXSwerveScoperXx.swerve.SwerveDrive;
+import org.usfirst.frc3707.xXSwerveScoperXx.swerve.SwerveWheel;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalSource;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 
 
@@ -57,6 +59,8 @@ public class DriveSystem extends Subsystem {
     private VictorSP backLeftDrive= new VictorSP(3);
 
     private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+    Lidar lidarCrab = new Lidar(new DigitalInput(10));
+
 
     
     private SwerveWheel frontLeftWheel = new SwerveWheel(frontLeftTwist, frontLeftDrive, 18);
@@ -179,9 +183,14 @@ public void moveLeftOrRight(double power){
         // setDefaultCommand(new MySpecialCommand());
     }
 
+
+    
+
     @Override
     public void periodic() {
         // Put code here to be run every loop
+
+        System.out.println(lidarCrab.getDistance());
 
     }
 
@@ -210,8 +219,10 @@ public void moveLeftOrRight(double power){
         if (realx_pos.length > 0 && realx_pos[0] != -1)
         {
             error = Robot.driveSystem.computePIDPower(realx_pos[0], 159);
+            System.out.println(error);
             return error;
         }
+        System.out.println(error);
         return 0;
     }
 

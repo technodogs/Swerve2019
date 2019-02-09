@@ -50,12 +50,10 @@ public class joystick_drive_swerve extends Command {
         if (Robot.oi.joystick1.getRawButton(6) == true)
         {
             Robot.driveSystem.drive(Robot.driveSystem.getError(), Robot.oi.joystick1.getRawAxis(1), Robot.oi.joystick1.getRawAxis(4), Robot.oi.joystick1.getRawButton(3), Robot.oi.joystick1.getRawButton(2)); 
-            System.out.println("test");   
         }
         else
         {
             Robot.driveSystem.drive(Robot.oi.joystick1.getRawAxis(0), Robot.oi.joystick1.getRawAxis(1), Robot.oi.joystick1.getRawAxis(4), Robot.oi.joystick1.getRawButton(3), Robot.oi.joystick1.getRawButton(2));
-            System.out.println("test 2");
         }
        // Robot.driveSystem.drive(Robot.oi.joystick1.getRawAxis(4), Robot.oi.joystick1.getRawAxis(1), Robot.oi.joystick1.getRawAxis(0), Robot.oi.joystick1.getRawButton(3), Robot.oi.joystick1.getRawButton(2));
     }
@@ -68,6 +66,8 @@ public class joystick_drive_swerve extends Command {
     // Called once after isFinished returns true
     @Override
     protected void end() {
+
+        
     }
 
     // Called when another command which requires one or more of the same
