@@ -10,9 +10,12 @@
 
 
 package org.usfirst.frc3707.xXSwerveScoperXx.commands;
-import edu.wpi.first.wpilibj.command.Command;
+
 import org.usfirst.frc3707.xXSwerveScoperXx.Robot;
-import org.usfirst.frc3707.xXSwerveScoperXx.subsystems.DriveSystem;
+import org.usfirst.frc3707.xXSwerveScoperXx.lidar.Lidar;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
@@ -43,13 +46,15 @@ public class joystick_drive_swerve extends Command {
         Robot.driveSystem.enable();
     }
 
+    //Lidar lidarCrab = new Lidar(new DigitalInput(10));
+
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
 
         if (Robot.oi.joystick1.getRawButton(6) == true)
         {
-            Robot.driveSystem.drive(Robot.driveSystem.getError(), Robot.oi.joystick1.getRawAxis(1), Robot.oi.joystick1.getRawAxis(4), Robot.oi.joystick1.getRawButton(3), Robot.oi.joystick1.getRawButton(2)); 
+            Robot.driveSystem.drive(Robot.driveSystem.getError2(), Robot.oi.joystick1.getRawAxis(1), Robot.driveSystem.getSpinValue(), Robot.oi.joystick1.getRawButton(3), Robot.oi.joystick1.getRawButton(2)); 
         }
         else
         {

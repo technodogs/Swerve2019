@@ -10,6 +10,8 @@
 
 package org.usfirst.frc3707.xXSwerveScoperXx.subsystems;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import org.usfirst.frc3707.xXSwerveScoperXx.Robot;
@@ -63,10 +65,10 @@ public class DriveSystem extends Subsystem {
 
 
     
-    private SwerveWheel frontLeftWheel = new SwerveWheel(frontLeftTwist, frontLeftDrive, 18);
-    private SwerveWheel frontRightWheel = new SwerveWheel(frontRightTwist, frontRightDrive, 204);
-    private SwerveWheel backLeftWheel = new SwerveWheel(backLeftTwist, backLeftDrive, -40);
-    private SwerveWheel backRightWheel = new SwerveWheel(backRightTwist, backRightDrive, 108);
+    private SwerveWheel frontLeftWheel = new SwerveWheel(frontLeftTwist, frontLeftDrive, 18-15);
+    private SwerveWheel frontRightWheel = new SwerveWheel(frontRightTwist, frontRightDrive, 204-15);
+    private SwerveWheel backLeftWheel = new SwerveWheel(backLeftTwist, backLeftDrive, -40-15);
+    private SwerveWheel backRightWheel = new SwerveWheel(backRightTwist, backRightDrive, 108-15);
     public SwerveDrive swerve = new SwerveDrive(frontRightWheel, frontLeftWheel, backLeftWheel, backRightWheel, gyro);
     
    // LiveWindow.addSensor("Sensors", "gyro", gyro);
@@ -190,23 +192,30 @@ public void moveLeftOrRight(double power){
     public void periodic() {
         // Put code here to be run every loop
 
-        System.out.println(lidarCrab.getDistance());
+        //System.out.println(lidarCrab.getDistance());
 
     }
+    
 
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
     NetworkTableEntry x_pos;
     NetworkTableEntry y_pos;
-    NetworkTableInstance inst;
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();;
     double[] realx_pos;
-    NetworkTable pixyData;
+    NetworkTable pixyData = inst.getTable("PixyData");;
     double[] defaultValue = {-1};
     double error;
     double[] lastError = new double[10];
     
-    public double getError ()
+    NetworkTableEntry x0;
+    NetworkTableEntry x1;
+
+    double[] real_x0Array;
+    double[] real_x1Array;
+
+    /*public double getError ()
     {
         inst = NetworkTableInstance.getDefault();
         pixyData = inst.getTable("PixyData");
@@ -221,6 +230,102 @@ public void moveLeftOrRight(double power){
             error = Robot.driveSystem.computePIDPower(realx_pos[0], 159);
             System.out.println(error);
             return error;
+        }
+        System.out.println(error);
+        return 0;
+    }*/
+
+    public double getSpinValue ()
+    {
+        x0 = pixyData.getEntry("x0");
+        x1 = pixyData.getEntry("x1");
+
+        real_x0Array = x0.getDoubleArray(defaultValue);
+        real_x1Array = x1.getDoubleArray(defaultValue);
+
+        double mid0 = 0;
+        double mid1 = 0;
+
+        for (int x = 0; x < real_x0Array.length; x++)
+        {
+            if (x == 0)
+            {
+                mid0 = real_x0Array[0];
+            }
+            else if (Math.abs(real_x0Array[x] - 50) < Math.abs(mid0 - 50))
+            {
+                mid0 = real_x0Array[x];
+            }
+        }
+
+        for(int x = 0; x < real_x1Array.length; x++)
+        {
+            if (x == 0)
+            {
+                mid1 = real_x1Array[0];
+            }
+            else if (Math.abs(real_x1Array[x] - 50) < Math.abs(mid1 - 50))
+            {
+                mid1 = real_x1Array[x];
+            }
+        }
+
+        if (mid0 < mid1 && Math.abs(mid0 - mid1) > 4)
+        {
+            System.out.println("Right");
+            return (.25);
+        }
+        else if (Math.abs(mid0 - mid1) > 4)
+        {
+            System.out.println("Left");
+            return (-.25);
+        }
+        
+        return 0;
+    }
+
+    public double getError2 ()
+    {
+        x0 = pixyData.getEntry("x0");
+        x1 = pixyData.getEntry("x1");
+
+        real_x0Array = x0.getDoubleArray(defaultValue);
+        real_x1Array = x1.getDoubleArray(defaultValue);
+
+        double mid0 = 0;
+        double mid1 = 0;
+
+        for (int x = 0; x < real_x0Array.length; x++)
+        {
+            if (x == 0)
+            {
+                mid0 = real_x0Array[0];
+            }
+            else if (Math.abs(real_x0Array[x] - 50) < Math.abs(mid0 - 50))
+            {
+                mid0 = real_x0Array[x];
+            }
+        }
+
+        for(int x = 0; x < real_x1Array.length; x++)
+        {
+            if (x == 0)
+            {
+                mid1 = real_x1Array[0];
+            }
+            else if (Math.abs(real_x1Array[x] - 50) < Math.abs(mid1 - 50))
+            {
+                mid1 = real_x1Array[x];
+            }
+        }
+
+        double x_difference = ((mid0 + mid1) / 2);
+
+        if (x_difference > 5)
+        {
+            error = Robot.driveSystem.computePIDPower(x_difference, 50);
+            System.out.println(-error * 3);
+            return -error * 3;
         }
         System.out.println(error);
         return 0;
